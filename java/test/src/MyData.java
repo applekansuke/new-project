@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.swing.DefaultListModel;
 
 import com.example.tool.DumpObject;
-//aaa
+/// bbb
 public class MyData {
 	// map
 	Map<String, DumpObject> map = new HashMap<String, DumpObject>();
