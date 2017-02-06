@@ -1,0 +1,50 @@
+diff -u DumpObject.java~ DumpObject.java
+--- DumpObject.java~	Mon Jun 13 01:15:38 2005
++++ DumpObject.java	Thu Nov 16 22:05:22 2006
+@@ -29,6 +29,25 @@
+     public DumpObject(Object o) {
+         target = o;
+     }
++
++    class EmbededKey {
++        Class cls;
++        Object obj;
++        EmbededKey(Class c, Object o) {
++            obj = o;
++            cls = c;
++        }
++        public boolean equals(Object o) {
++            if (o instanceof EmbededKey) {
++                return ((EmbededKey)o).cls == cls && ((EmbededKey)o).obj == obj;
++            }
++            return false;
++        }
++        public int hashCode() {
++            return cls.hashCode() ^ obj.hashCode();
++        }
++    }
++    
+     /**
+      * オブジェクトを文字列化する。
+      * @return オブジェクトの文字列表現
+@@ -63,8 +82,9 @@
+             }
+             buffer.append(']');
+         } else {
+-            if (embeded.containsKey(o)) {
+-                buffer.append('(').append(embeded.get(o)).append(')');
++            EmbededKey ekey = new EmbededKey(c, o);
++            if (embeded.containsKey(ekey)) {
++                buffer.append('(').append(embeded.get(ekey)).append(')');
+             } else {
+                 buffer.append(dumpObject(c, o, level));
+             }
+@@ -82,7 +102,7 @@
+         } catch (NoSuchMethodException e) { // never
+             return o.toString();
+         }
+-        embeded.put(o, o.toString());
++        embeded.put(new EmbededKey(c, o), o.toString());
+         StringBuffer buffer = new StringBuffer();
+         buffer.append(o.toString());
+         buffer.append(dumpFields(c, o, level));
